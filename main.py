@@ -5,6 +5,7 @@ from player import *
 from circleshape import *
 from asteroid import *
 from asteroidfield import *
+from shot import *
 
 def main():
     pygame.init()
@@ -18,10 +19,12 @@ def main():
     updatables = pygame.sprite.Group()
     drawables = pygame.sprite.Group()
     asteroids = pygame.sprite.Group()
+    shots = pygame.sprite.Group()
 
     AsteroidField.containers = updatables
     Asteroid.containers = (asteroids, updatables, drawables)
     Player.containers = (updatables, drawables)
+    Shot.containers = (updatables, drawables, shots)
 
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
     asteroidfield = AsteroidField()
@@ -38,6 +41,12 @@ def main():
             if asteroid.collisioncheck(player):
                 print ("Game over!")
                 sys.exit()
+        for asteroid in asteroids:
+            for shot in shots:
+                if shot.collisioncheck(asteroid):
+                    shot.kill()
+                    asteroid.split()
+
         pygame.display.flip()
         dt = clock.tick(60) / 1000
 if __name__ == "__main__":
